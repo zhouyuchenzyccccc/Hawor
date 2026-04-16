@@ -157,6 +157,8 @@ def main():
                     help="Savitzky-Golay 窗口大小，必须为奇数（默认 11）")
     ap.add_argument("--dry_run", action="store_true",
                     help="只统计，不写文件")
+    ap.add_argument("--analyze", action="store_true",
+                    help="打印跳变分布直方图（P50/P90/P95/P99/max），帮助选择合适阈值")
 
     args = ap.parse_args()
 
@@ -180,6 +182,38 @@ def main():
           f"  window={args.smooth_window}  context=±{args.context}帧")
     if args.dry_run:
         print("[dry_run] 不写文件\n")
+
+    # --analyze：打印跳变分布，帮助选阈值
+    if args.analyze:
+        all_jumps = {"left": [], "right": []}
+        for fp in input_files:
+            data = dict(np.load(str(fp)))
+            for side in ("left", "right"):
+                key = f"{side}_wrist_poses"
+                if key not in data:
+                    continue
+                xyz = data[key].astype(np.float32)[:, :3]
+                if len(xyz) < 2:
+                    continue
+                jumps_mm = np.linalg.norm(np.diff(xyz, axis=0), axis=1) * 1000.0
+                all_jumps[side].append(jumps_mm)
+        print("\n=== 跳变分布分析（mm）===")
+        thresholds = [10, 20, 30, 50, 100]
+        for side in ("left", "right"):
+            if not all_jumps[side]:
+                continue
+            j = np.concatenate(all_jumps[side])
+            print(f"\n  [{side.upper()}]  总帧间样本: {len(j)}")
+            print(f"    P50={np.percentile(j,50):.1f}  P90={np.percentile(j,90):.1f}"
+                  f"  P95={np.percentile(j,95):.1f}  P99={np.percentile(j,99):.1f}"
+                  f"  max={j.max():.1f}")
+            print("    阈值命中率:")
+            for t in thresholds:
+                cnt = int(np.sum(j > t))
+                print(f"      >{t:3d}mm: {cnt:6d} 帧  ({100*cnt/len(j):.2f}%)")
+        print()
+        if not (args.dry_run or args.inplace or args.output or args.output_dir):
+            return
 
     total_fixed = {"left": 0, "right": 0}
 
