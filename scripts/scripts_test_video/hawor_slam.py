@@ -13,13 +13,19 @@ import torch
 import cv2
 from PIL import Image
 from glob import glob
-from pycocotools import mask as masktool
-from lib.pipeline.masked_droid_slam import *
-from lib.pipeline.est_scale import *
 from hawor.utils.process import block_print, enable_print
 
-sys.path.insert(0, os.path.dirname(__file__) + '/../../thirdparty/Metric3D')
-from metric import Metric3D
+
+try:
+    from pycocotools import mask as masktool
+    from lib.pipeline.masked_droid_slam import *
+    from lib.pipeline.est_scale import *
+    import sys as _sys_slam
+    _sys_slam.path.insert(0, __file__.rsplit("/scripts/", 1)[0] + "/thirdparty/Metric3D")
+    from metric import Metric3D
+except Exception:
+    pass  # SLAM deps not available; hawor_slam() will fail if called
+
 
 
 def get_all_mp4_files(folder_path):

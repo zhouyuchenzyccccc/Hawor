@@ -1,0 +1,1 @@
+/home/ubuntu/WorkSpace/ZYC/ego_recovery_data_preprocessing/visualize_lerobot_state_video.py
