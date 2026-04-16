@@ -62,17 +62,18 @@ def interpolate_bad(poses: np.ndarray, bad: np.ndarray) -> np.ndarray:
     return result
 
 
-def smooth_poses(poses: np.ndarray, method: str, window: int) -> np.ndarray:
-    T = len(poses)
+def smooth_xyz(xyz: np.ndarray, method: str, window: int) -> np.ndarray:
+    """仅对 XYZ (T, 3) 做平滑，不触碰 RPY。"""
+    T = len(xyz)
     win = min(window, T if T % 2 == 1 else T - 1)
     if win < 5 or method == "none":
-        return poses
-    s = poses.copy()
-    for d in range(poses.shape[1]):
+        return xyz
+    s = xyz.copy()
+    for d in range(xyz.shape[1]):
         if method == "savgol":
-            s[:, d] = savgol_filter(poses[:, d], win, 3)
+            s[:, d] = savgol_filter(xyz[:, d], win, 3)
         elif method == "median_then_savgol":
-            s[:, d] = median_filter(poses[:, d], size=5)
+            s[:, d] = median_filter(xyz[:, d], size=5)
             s[:, d] = savgol_filter(s[:, d], win, 3)
     return s.astype(np.float32)
 
@@ -80,14 +81,31 @@ def smooth_poses(poses: np.ndarray, method: str, window: int) -> np.ndarray:
 def postprocess_side(poses: np.ndarray, jump_thresh_m: float,
                      smooth_method: str, smooth_window: int,
                      context: int) -> tuple[np.ndarray, int]:
-    """处理单侧（left/right）的 poses (T, 6)，返回 (cleaned_poses, n_fixed_frames)。"""
+    """
+    处理单侧（left/right）的 poses (T, 6)，返回 (cleaned_poses, n_fixed_frames)。
+
+    策略：
+    - XYZ：异常帧检测 → 插值 → 平滑
+    - RPY：仅在 XYZ 异常帧处插值（那些帧旋转也不可信），不做额外平滑
+      （HaWoR 旋转质量本身较好，平滑反而引入误差）
+    """
+    result = poses.copy()
     xyz = poses[:, :3]
+    rpy = poses[:, 3:6]
+
     bad = detect_jump_outliers(xyz, jump_thresh_m, context)
     n_fixed = int(bad.sum())
+
     if n_fixed > 0:
-        poses = interpolate_bad(poses, bad)
-    poses = smooth_poses(poses, smooth_method, smooth_window)
-    return poses, n_fixed
+        # XYZ：插值异常帧
+        result[:, :3] = interpolate_bad(xyz, bad)
+        # RPY：仅插值 XYZ 异常帧（旋转在这些帧同样不可信）
+        result[:, 3:6] = interpolate_bad(rpy, bad)
+
+    # 平滑只作用于 XYZ
+    result[:, :3] = smooth_xyz(result[:, :3], smooth_method, smooth_window)
+
+    return result, n_fixed
 
 
 def process_file(input_path: Path, output_path: Path, args) -> dict:
