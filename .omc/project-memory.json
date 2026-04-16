@@ -1,0 +1,245 @@
+{
+  "version": "1.0.0",
+  "lastScanned": 1776308912461,
+  "projectRoot": "D:\\杂项\\hawor",
+  "techStack": {
+    "languages": [
+      {
+        "name": "Python",
+        "version": null,
+        "confidence": "high",
+        "markers": [
+          "requirements.txt"
+        ]
+      }
+    ],
+    "frameworks": [],
+    "packageManager": "pip",
+    "runtime": null
+  },
+  "build": {
+    "buildCommand": null,
+    "testCommand": null,
+    "lintCommand": null,
+    "devCommand": null,
+    "scripts": {}
+  },
+  "conventions": {
+    "namingStyle": null,
+    "importStyle": null,
+    "testPattern": null,
+    "fileOrganization": null
+  },
+  "structure": {
+    "isMonorepo": false,
+    "workspaces": [],
+    "mainDirectories": [
+      "assets",
+      "lib",
+      "scripts"
+    ],
+    "gitBranches": {
+      "defaultBranch": "main",
+      "branchingStrategy": null
+    }
+  },
+  "customNotes": [],
+  "directoryMap": {
+    "assets": {
+      "path": "assets",
+      "purpose": "Static assets",
+      "fileCount": 1,
+      "lastAccessed": 1776308912428,
+      "keyFiles": [
+        "teaser.png"
+      ]
+    },
+    "ego_recovery_data_preprocessing": {
+      "path": "ego_recovery_data_preprocessing",
+      "purpose": null,
+      "fileCount": 7,
+      "lastAccessed": 1776308912429,
+      "keyFiles": [
+        "convert_to_lerobot.py",
+        "hawor_extract_poses.py",
+        "install.sh",
+        "make_mano_left.py",
+        "README.md"
+      ]
+    },
+    "example": {
+      "path": "example",
+      "purpose": null,
+      "fileCount": 3,
+      "lastAccessed": 1776308912429,
+      "keyFiles": [
+        "segment_018.mp4",
+        "segment_037.mp4",
+        "video_0.mp4"
+      ]
+    },
+    "hawor": {
+      "path": "hawor",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1776308912430,
+      "keyFiles": []
+    },
+    "infiller": {
+      "path": "infiller",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1776308912430,
+      "keyFiles": []
+    },
+    "lib": {
+      "path": "lib",
+      "purpose": "Library code",
+      "fileCount": 0,
+      "lastAccessed": 1776308912431,
+      "keyFiles": []
+    },
+    "scripts": {
+      "path": "scripts",
+      "purpose": "Build/utility scripts",
+      "fileCount": 0,
+      "lastAccessed": 1776308912431,
+      "keyFiles": []
+    },
+    "thirdparty": {
+      "path": "thirdparty",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1776308912431,
+      "keyFiles": []
+    },
+    "weights": {
+      "path": "weights",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1776308912431,
+      "keyFiles": []
+    },
+    "_DATA": {
+      "path": "_DATA",
+      "purpose": null,
+      "fileCount": 0,
+      "lastAccessed": 1776308912432,
+      "keyFiles": []
+    },
+    "__pycache__": {
+      "path": "__pycache__",
+      "purpose": null,
+      "fileCount": 1,
+      "lastAccessed": 1776308912432,
+      "keyFiles": [
+        "demo.cpython-310.pyc"
+      ]
+    },
+    "hawor\\utils": {
+      "path": "hawor\\utils",
+      "purpose": "Utility functions",
+      "fileCount": 5,
+      "lastAccessed": 1776308912433,
+      "keyFiles": [
+        "geometry.py",
+        "process.py",
+        "pylogger.py"
+      ]
+    },
+    "infiller\\lib": {
+      "path": "infiller\\lib",
+      "purpose": "Library code",
+      "fileCount": 0,
+      "lastAccessed": 1776308912433,
+      "keyFiles": []
+    },
+    "lib\\models": {
+      "path": "lib\\models",
+      "purpose": "Data models",
+      "fileCount": 3,
+      "lastAccessed": 1776308912433,
+      "keyFiles": [
+        "hawor.py",
+        "mano_wrapper.py",
+        "modules.py"
+      ]
+    },
+    "lib\\utils": {
+      "path": "lib\\utils",
+      "purpose": "Utility functions",
+      "fileCount": 2,
+      "lastAccessed": 1776308912434,
+      "keyFiles": [
+        "geometry.py",
+        "imutils.py"
+      ]
+    },
+    "_DATA\\data": {
+      "path": "_DATA\\data",
+      "purpose": "Data files",
+      "fileCount": 1,
+      "lastAccessed": 1776308912435,
+      "keyFiles": [
+        "mano_mean_params.npz"
+      ]
+    }
+  },
+  "hotPaths": [
+    {
+      "path": "ego_recovery_data_preprocessing\\postprocess_poses.py",
+      "accessCount": 18,
+      "lastAccessed": 1776334207288,
+      "type": "file"
+    },
+    {
+      "path": "ego_recovery_data_preprocessing\\README.md",
+      "accessCount": 5,
+      "lastAccessed": 1776334043381,
+      "type": "file"
+    },
+    {
+      "path": "ego_recovery_data_preprocessing\\hawor_extract_poses.py",
+      "accessCount": 3,
+      "lastAccessed": 1776334043429,
+      "type": "file"
+    },
+    {
+      "path": "ego_recovery_data_preprocessing\\convert_to_lerobot.py",
+      "accessCount": 2,
+      "lastAccessed": 1776334043366,
+      "type": "file"
+    },
+    {
+      "path": "ego_recovery_data_preprocessing\\evaluate_pose_quality.py",
+      "accessCount": 2,
+      "lastAccessed": 1776334048099,
+      "type": "file"
+    },
+    {
+      "path": "ego_recovery_data_preprocessing\\visualize_hawor_poses.py",
+      "accessCount": 1,
+      "lastAccessed": 1776334048078,
+      "type": "file"
+    },
+    {
+      "path": "ego_recovery_data_preprocessing\\make_mano_left.py",
+      "accessCount": 1,
+      "lastAccessed": 1776334058525,
+      "type": "file"
+    },
+    {
+      "path": "ego_recovery_data_preprocessing\\visualize_lerobot_state_video.py",
+      "accessCount": 1,
+      "lastAccessed": 1776334058555,
+      "type": "file"
+    },
+    {
+      "path": "ego_recovery_data_preprocessing\\pad_episodes_to_same_length.py",
+      "accessCount": 1,
+      "lastAccessed": 1776334245712,
+      "type": "file"
+    }
+  ],
+  "userDirectives": []
+}
