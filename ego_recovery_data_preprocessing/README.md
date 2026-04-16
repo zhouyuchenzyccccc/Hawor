@@ -35,9 +35,11 @@ hawor/
 │   └── data_left/mano_left/
 │       └── MANO_LEFT.pkl       ← 从 RIGHT 镜像生成
 └── ego_recovery_data_preprocessing/
-    ├── hawor_extract_poses.py  ← 主提取脚本（本项目）
+    ├── hawor_extract_poses.py      ← 主提取脚本（本项目）
+    ├── postprocess_poses.py        ← 位姿后处理：去除大跳变
+    ├── evaluate_pose_quality.py    ← 位姿质量评估
     ├── visualize_hawor_poses.py
-    ├── convert_to_lerobot.py   ← symlink from ego_recovery_data_preprocessing
+    ├── convert_to_lerobot.py
     └── README.md
 ```
 
@@ -150,6 +152,51 @@ python hawor_extract_poses.py \
 | `--no_depth_anchor` | 关闭 | 跳过 Orbbec 深度 metric 校正 |
 | `--smooth_method` | `none` | 额外平滑（HaWoR 已内置时序平滑） |
 
+### 步骤 1.5（可选）：位姿后处理——去除大跳变
+
+HaWoR 在部分帧可能出现 tracking failure，导致 XYZ 瞬间跳变 100mm 以上。
+`postprocess_poses.py` 对已生成的 `wrist_poses.npz` 做**异常帧检测 → 插值 → 平滑**，无需重跑 HaWoR。
+
+**先 dry_run 查看会修复多少帧（不写文件）：**
+
+```bash
+python postprocess_poses.py \
+    --input_dir /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion/wrist_poses_hawor \
+    --dry_run
+```
+
+**输出到新目录（保留原文件）：**
+
+```bash
+python postprocess_poses.py \
+    --input_dir /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion/wrist_poses_hawor \
+    --output_dir /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion/wrist_poses_clean \
+    --jump_thresh_mm 50
+```
+
+**直接覆盖原文件：**
+
+```bash
+python postprocess_poses.py \
+    --input_dir /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion/wrist_poses_hawor \
+    --inplace \
+    --jump_thresh_mm 50
+```
+
+**主要参数：**
+
+| 参数 | 默认值 | 说明 |
+|---|---|---|
+| `--jump_thresh_mm` | `50` | XYZ 帧间跳变阈值（mm），超过则视为异常帧 |
+| `--context` | `1` | 异常帧前后额外标记的帧数，避免插值锚点也是坏帧 |
+| `--smooth_method` | `median_then_savgol` | 平滑方法：`savgol` / `median_then_savgol` / `none` |
+| `--smooth_window` | `11` | Savitzky-Golay 窗口大小（奇数） |
+| `--dry_run` | 关闭 | 只统计不写文件 |
+
+> **调参建议：** 若处理后仍有较多 >10cm 跳变，可将 `--jump_thresh_mm` 降至 30，或将 `--context` 加到 2。
+
+---
+
 ### 步骤 2：可视化验证
 
 ```bash
@@ -183,6 +230,39 @@ source /home/ubuntu/WorkSpace/ZYC/hamer/.hamer/bin/activate
       --task "hand insertion recovery" \
       --ego_cam_id 07 --left_wrist_cam_id 06 --right_wrist_cam_id 08
 ```
+
+### 步骤 4（可选）：评估位姿质量
+
+对转换后的 LeRobot 数据集计算位姿质量指标，用于对比后处理前后的效果。
+
+```bash
+python evaluate_pose_quality.py \
+    --dataset /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion/lerobot_hawor
+
+# 只评估左手
+python evaluate_pose_quality.py \
+    --dataset /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion/lerobot_hawor \
+    --side left
+
+# 打印每个 episode 的大跳变帧位置
+python evaluate_pose_quality.py \
+    --dataset /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion/lerobot_hawor \
+    --verbose
+```
+
+**输出指标：**
+
+| 指标 | 说明 |
+|---|---|
+| RPY 平均帧间跳变 | 旋转平均变化量（deg/帧） |
+| RPY P99 跳变 | 99 分位跳变，反映极端抖动 |
+| RPY 大跳变 (>46°) | 明显旋转突变帧数 |
+| RPY 自相关 (lag-1) | 越接近 1 越平滑 |
+| XYZ 平均帧间跳变 | 位置平均变化量（mm/帧） |
+| XYZ P99 跳变 | 99 分位跳变 |
+| XYZ 大跳变 (>20mm) | 明显位置突变帧数 |
+| XYZ >10cm 跳变 episodes | 存在严重 tracking failure 的 episode 列表 |
+| XYZ 自相关 (lag-1) | 越接近 1 越平滑 |
 
 ---
 
