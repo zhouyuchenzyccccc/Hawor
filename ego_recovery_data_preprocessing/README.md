@@ -113,6 +113,18 @@ python /home/ubuntu/WorkSpace/ZYC/hawor/ego_recovery_data_preprocessing/make_man
 ---
 
 ## 使用步骤
+```bash
+  # 原地修改（直接覆盖原始 episode 目录）：
+  python pad_episodes_to_same_length.py --data_dir /path/to/dataset
+
+  # 写到新目录（保留原始数据）：
+  python pad_episodes_to_same_length.py --data_dir /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_new_success/pick_and_place --output_dir /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_new_success/pick_and_place_padded
+
+  # 预览，不写入任何文件：
+  python pad_episodes_to_same_length.py --data_dir /path/to/dataset --dry_run
+
+```
+
 
 ### 步骤 1：提取手腕位姿
 
@@ -121,21 +133,24 @@ source /home/ubuntu/WorkSpace/ZYC/hamer/.hamer/bin/activate
 cd /home/ubuntu/WorkSpace/ZYC/hawor/ego_recovery_data_preprocessing
 
 python hawor_extract_poses.py \
-    --data_dir /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion/test/0 \
-    --output /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion/test/0/wrist_poses.npz \
-    --ego_cam_id 07
+    --data_dir /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_new_recovery/pick_and_place_padded \
+    --output /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_new_recovery/hand_insertion_new_recovery_hawor \
+    --ego_cam_id 06
 ```
 
 **批量处理所有序列（0~100）：**
 
 ```bash
 python hawor_extract_poses.py \
-    --data_dir /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion/test \
+    --data_dir /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_new_success/pick_and_place \
     --output /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion/poses/wrist_poses.npz \
     --ego_cam_id 07
 
 
     nohup python ego_recovery_data_preprocessing/hawor_extract_poses.py       --data_dir /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion/test       --output /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion/wrist_poses_hawor       --ego_cam_id 07       > /tmp/hawor_extract_insertion.log 2>&1 &
+
+
+    python ego_recovery_data_preprocessing/hawor_extract_poses.py       --data_dir /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_416/pick_and_place/       --output /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_416/wrist_poses_hawor       --ego_cam_id 07 
 ```
 
 批量模式下输出文件命名为 `0_wrist_poses.npz`、`1_wrist_poses.npz` 等。
@@ -223,10 +238,10 @@ source /home/ubuntu/WorkSpace/ZYC/hamer/.hamer/bin/activate
   cd /home/ubuntu/WorkSpace/ZYC/hawor
 
   # hand_insertion_recovery1
-  python ego_recovery_data_preprocessing/convert_to_lerobot.py \
-      --data_dir /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_recovery1/test \
-      --poses /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_recovery1/wrist_poses_hawor \
-      --output /home/ubuntu/WorkSpace/ZYC/dataset/lerobot_hawor \
+  python convert_to_lerobot.py \
+      --data_dir /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_recovery2/test \
+      --poses /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_recovery2/wrist_poses_hawor_clean \
+      --output /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_recovery2/lerobot_hawor_clean \
       --task "hand insertion recovery" \
       --ego_cam_id 07 --left_wrist_cam_id 06 --right_wrist_cam_id 08
 ```
@@ -236,6 +251,7 @@ source /home/ubuntu/WorkSpace/ZYC/hamer/.hamer/bin/activate
 对转换后的 LeRobot 数据集计算位姿质量指标，用于对比后处理前后的效果。
 
 ```bash
+
 python evaluate_pose_quality.py \
     --dataset /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion/lerobot_hawor
 

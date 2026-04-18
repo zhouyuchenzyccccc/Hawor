@@ -72,3 +72,11 @@ ipython_config.py
 
 vis.mp4
 imgui.ini
+ego_recovery_data_preprocessing/hawor_viz_1.mp4
+.gitignore
+ego_recovery_data_preprocessing/hawor_viz.mp4
+ego_recovery_data_preprocessing/README.md
+ego_recovery_data_preprocessing/hawor_viz_recovery1.mp4
+ego_recovery_data_preprocessing/hawor_viz_recovery2.mp4
+ego_recovery_data_preprocessing/out.mp4
+ego_recovery_data_preprocessing/out2.mp4
