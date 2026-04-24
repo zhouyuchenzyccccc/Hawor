@@ -239,11 +239,11 @@ source /home/ubuntu/WorkSpace/ZYC/hamer/.hamer/bin/activate
 
   # hand_insertion_recovery1
   python convert_to_lerobot.py \
-      --data_dir /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_recovery2/test \
-      --poses /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_recovery2/wrist_poses_hawor_clean \
-      --output /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_recovery2/lerobot_hawor_clean \
-      --task "hand insertion recovery" \
-      --ego_cam_id 07 --left_wrist_cam_id 06 --right_wrist_cam_id 08
+      --data_dir /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_new_success/pick_and_place \
+      --poses /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_new_success/hand_insertion_new_success_hawor_clean \
+      --output /home/ubuntu/WorkSpace/ZYC/dataset/hand_insertion_new_success/hand_insertion_new_success_hawor_clean_lerobot \
+      --task "hand insertion success" \
+      --ego_cam_id 06 --left_wrist_cam_id 07 --right_wrist_cam_id 08
 ```
 
 ### 步骤 4（可选）：评估位姿质量
